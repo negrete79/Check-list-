@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Room, RoomStatus, UserRole, ChecklistTemplate } from '../types';
-import { INITIAL_ROOMS, INITIAL_TEMPLATES } from '../constants';
+import { Room, RoomStatus, UserRole, ChecklistTemplate } from './types';
+import { INITIAL_ROOMS, INITIAL_TEMPLATES } from './constants';
 import Dashboard from './components/Dashboard';
 import RoomList from './components/RoomList';
 import RoomDetail from './components/RoomDetail';
@@ -20,13 +20,20 @@ const App: React.FC = () => {
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
+  // Carregamento Seguro
   useEffect(() => {
-    const savedRooms = localStorage.getItem('inncheck_rooms');
-    if (savedRooms) setRooms(JSON.parse(savedRooms));
-    const savedTemplates = localStorage.getItem('inncheck_templates');
-    if (savedTemplates) setTemplates(JSON.parse(savedTemplates));
-    const savedUser = localStorage.getItem('inncheck_user');
-    if (savedUser) setUser(JSON.parse(savedUser));
+    try {
+      const savedRooms = localStorage.getItem('inncheck_rooms');
+      if (savedRooms) setRooms(JSON.parse(savedRooms));
+
+      const savedTemplates = localStorage.getItem('inncheck_templates');
+      if (savedTemplates) setTemplates(JSON.parse(savedTemplates));
+
+      const savedUser = localStorage.getItem('inncheck_user');
+      if (savedUser) setUser(JSON.parse(savedUser));
+    } catch (e) {
+      console.warn("InnCheck: Erro ao restaurar dados locais, usando padrões.");
+    }
   }, []);
 
   const handleLogin = (role: UserRole, name: string) => {
@@ -90,8 +97,6 @@ const App: React.FC = () => {
             <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 flex items-center gap-2">
               {selectedRoom ? (
                 <>🏡 Vistoria: {selectedRoom.number}</>
-              ) : activeTab === 'settings' ? (
-                <>🏡 Gerenciamento Sítio Limeira</>
               ) : (
                 <>🏡 {activeTab.toUpperCase()}</>
               )}
@@ -99,11 +104,11 @@ const App: React.FC = () => {
           </div>
           <div className="px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-            <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Sítio Recanto da Limeira 🏡</span>
+            <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Sítio Recanto da Limeira</span>
           </div>
         </header>
 
-        <div id="main-scroll-area" className="flex-1 overflow-y-auto p-6 lg:p-10 custom-scroll relative">
+        <div id="main-scroll-area" className="flex-1 overflow-y-auto p-6 lg:p-10 custom-scroll">
           {selectedRoom ? (
             <RoomDetail room={selectedRoom} onUpdate={updateSingleRoom} onBack={() => setSelectedRoom(null)} />
           ) : (

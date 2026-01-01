@@ -1,20 +1,21 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
 
-# Run and deploy your AI Studio app
+# 🚀 Como Ativar o InnCheck no GitHub Pages
 
-This contains everything you need to run your app locally.
+Se você já enviou os arquivos para o GitHub e o site está em branco ou não aparece, siga estes 3 passos simples:
 
-View your app in AI Studio: https://ai.studio/apps/drive/1Vie3X8kujRzeOcOukppjFmZ6AuWWDK4u
+### 1. Ativar o "GitHub Actions"
+O seu projeto usa um arquivo especial (`deploy.yml`) que constrói o app para você. Você precisa autorizar o GitHub a usá-lo:
+1. No seu repositório no GitHub, clique na aba **Settings** (Configurações).
+2. No menu lateral esquerdo, clique em **Pages**.
+3. Em **Build and deployment > Source**, mude de "Deploy from a branch" para **"GitHub Actions"**.
 
-## Run Locally
+### 2. Acompanhar a Construção
+1. Clique na aba **Actions** no topo do seu repositório.
+2. Você verá um item chamado "Deploy to GitHub Pages". 
+3. Se houver uma bolinha amarela, ele está trabalhando. Quando ficar verde, o site está pronto!
 
-**Prerequisites:**  Node.js
+### 3. Acessar o Link
+- Assim que o processo terminar, o link do seu site aparecerá na própria aba **Settings > Pages**.
 
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+---
+*Dica: Se o site carregar mas ficar em branco, verifique se você clicou no botão "Settings" e mudou para "GitHub Actions" como explicado no passo 1.*
