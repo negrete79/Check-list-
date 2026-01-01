@@ -29,10 +29,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ rooms, templates, onUpdateRooms
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
   useEffect(() => {
-    window.addEventListener('beforeinstallprompt', (e) => {
+    const handler = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
-    });
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
   const handleInstallClick = async () => {
@@ -75,15 +77,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ rooms, templates, onUpdateRooms
       onUpdateTemplates(templates.map(t => t.id === tplId ? { ...t, items: t.items.filter((_, i) => i !== itemIdx) } : t));
     }
     setConfirmDelete(null);
-  };
-
-  const handleSaveItemEdit = () => {
-    if (!editingTemplateItem || !editingTemplateItem.title.trim()) return;
-    onUpdateTemplates(templates.map(t => t.id === editingTemplateItem.tplId ? {
-      ...t,
-      items: t.items.map((item, idx) => idx === editingTemplateItem.idx ? { ...item, title: editingTemplateItem.title } : item)
-    } : t));
-    setEditingTemplateItem(null);
   };
 
   return (
@@ -180,27 +173,41 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ rooms, templates, onUpdateRooms
       )}
 
       {activeSubTab === 'install' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in slide-in-from-bottom-4">
-          <GlassContainer className="border-blue-500/20 p-8 space-y-6">
-            <h4 className="text-lg font-black text-blue-400 uppercase tracking-tighter">No Android (Chrome)</h4>
-            <ol className="space-y-4 text-sm text-slate-400">
-              <li className="flex gap-3"><span className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-[10px] font-black">1</span> <span>Abra o link do app no Google Chrome.</span></li>
-              <li className="flex gap-3"><span className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-[10px] font-black">2</span> <span>Clique nos 3 pontinhos (Menu) no canto superior.</span></li>
-              <li className="flex gap-3"><span className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-[10px] font-black">3</span> <span>Selecione <strong>"Instalar aplicativo"</strong> ou "Adicionar à tela inicial".</span></li>
-            </ol>
+        <div className="space-y-6 animate-in slide-in-from-bottom-4">
+          <GlassContainer className="border-emerald-500/20 bg-emerald-500/5 p-8">
+             <h4 className="text-lg font-black text-emerald-400 uppercase tracking-widest mb-4">⚠️ Importante para GitHub Pages</h4>
+             <p className="text-slate-400 text-sm leading-relaxed mb-4">
+               Se o seu site no GitHub estiver em branco, você precisa ativar o <strong>GitHub Actions</strong> nas configurações do seu repositório:
+             </p>
+             <ol className="list-decimal list-inside text-slate-400 text-sm space-y-2 mb-6">
+                <li>Vá em <strong>Settings</strong> > <strong>Pages</strong>.</li>
+                <li>Em <strong>Source</strong>, mude para <strong>GitHub Actions</strong>.</li>
+                <li>Aguarde 2 minutos e atualize a página.</li>
+             </ol>
           </GlassContainer>
-          <GlassContainer className="border-purple-500/20 p-8 space-y-6">
-            <h4 className="text-lg font-black text-purple-400 uppercase tracking-tighter">No iPhone (Safari)</h4>
-            <ol className="space-y-4 text-sm text-slate-400">
-              <li className="flex gap-3"><span className="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-[10px] font-black">1</span> <span>Abra o link do app no navegador Safari.</span></li>
-              <li className="flex gap-3"><span className="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-[10px] font-black">2</span> <span>Clique no ícone de <strong>Compartilhar</strong> (quadrado com seta).</span></li>
-              <li className="flex gap-3"><span className="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-[10px] font-black">3</span> <span>Role para baixo e toque em <strong>"Adicionar à Tela de Início"</strong>.</span></li>
-            </ol>
-          </GlassContainer>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <GlassContainer className="border-blue-500/20 p-8 space-y-6">
+              <h4 className="text-lg font-black text-blue-400 uppercase tracking-tighter">No Android (Chrome)</h4>
+              <ol className="space-y-4 text-sm text-slate-400">
+                <li className="flex gap-3"><span className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-[10px] font-black">1</span> <span>Abra o link do site no Google Chrome.</span></li>
+                <li className="flex gap-3"><span className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-[10px] font-black">2</span> <span>Clique nos 3 pontinhos (Menu).</span></li>
+                <li className="flex gap-3"><span className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-[10px] font-black">3</span> <span>Selecione <strong>"Instalar aplicativo"</strong>.</span></li>
+              </ol>
+            </GlassContainer>
+            <GlassContainer className="border-purple-500/20 p-8 space-y-6">
+              <h4 className="text-lg font-black text-purple-400 uppercase tracking-tighter">No iPhone (Safari)</h4>
+              <ol className="space-y-4 text-sm text-slate-400">
+                <li className="flex gap-3"><span className="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-[10px] font-black">1</span> <span>Abra o link no navegador Safari.</span></li>
+                <li className="flex gap-3"><span className="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-[10px] font-black">2</span> <span>Toque no botão <strong>Compartilhar</strong>.</span></li>
+                <li className="flex gap-3"><span className="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-[10px] font-black">3</span> <span>Selecione <strong>"Tela de Início"</strong>.</span></li>
+              </ol>
+            </GlassContainer>
+          </div>
         </div>
       )}
 
-      {/* MODAL DE CONFIRMAÇÃO E EDIÇÃO OMITIDOS PARA BREVIDADE, MAS MANTIDOS NO CÓDIGO FINAL */}
+      {/* MODAL DE CONFIRMAÇÃO E EDIÇÃO */}
       {confirmDelete && (
         <div className="fixed inset-0 z-[300] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-6 animate-in fade-in duration-200">
           <div className="w-full max-w-sm bg-[#1e293b] rounded-[40px] border border-white/10 p-8 shadow-2xl space-y-8 animate-in zoom-in-95">
