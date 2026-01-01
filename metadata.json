@@ -1,0 +1,8 @@
+{
+  "name": "InnCheck Intelligent",
+  "description": "Futuristic AI-powered checklist and operational management system for inns and hotels, featuring smart task suggestions and real-time synchronization.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
